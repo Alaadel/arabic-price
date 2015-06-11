@@ -1,0 +1,210 @@
+private String NumberToArabic(String N) {
+        // Constants (units, header, footer ...etc)
+        String cw = " و ", cpnd = " جنيه ", cpen = " قرش ", chdr = "فقط", cftr = "لا غير", cspc = " ",
+                cMil = " ملايين", cTh = " ألفاً ", cHTh = " ألف", cOTh = " آلاف", c8 = "ية", c3 = "ة", cH = "مائة", cT = " عشر", cTT = "ون",
+                c2HTh = "مائتا";
+
+        // Number Combinations
+        String aM[] = {"", "مليون", "مليونان"},
+                aTh[] = {"", "ألف", "ألفان"},
+                aH[] = {"", "مائة", "مائتان"},
+                aT[] = {"", "عشرة", "عشرون"},
+                aTe[] = {"", "أحد", "اثنا"},
+                aO[] = {"", "واحد", "اثنان", "ثلاث", "أربع", "خمس", "ست", "سبع", "ثمان", "تسع"};
+
+        // I could have put them in one array and indexed them with the variable 'pos', but this way is clean and more readable
+        String Ret = "", // Substrings
+                sM = "", sHTh = "", sTTh = "", sOTh = "",
+                sH = "", sT = "", sO = "",
+                sTp = "", sOp = "";
+
+        try {
+            int sz = N.length();
+            int i = 0;
+            int dgt = N.charAt(i) - '0';        // Most significant digit
+            int pos, ppprev = 0, pprev = 0, prev = 0, next = 0, nnext = 0, nnnext = 0;
+
+            //Whether some digits are > 2 or not
+            boolean lMil = false, lTh = false;
+            //Whether the number is in teen range (13-19) or not
+            boolean tTTh = false, tT = false, tTp = false;
+
+            // Loop from the Most significant
+            while (i < sz) {
+                //Get positions of surrounding digits
+                if (i > 0) {
+                    prev = N.charAt(i - 1) - '0';
+                }
+                if (i > 1) {
+                    pprev = N.charAt(i - 2) - '0';
+                }
+                if (i > 2) {
+                    ppprev = N.charAt(i - 3) - '0';
+                }
+
+                dgt = N.charAt(i) - '0';        // Current digit
+
+                if (i < sz - 1) {
+                    next = N.charAt(i + 1) - '0';
+                }
+                if (i < sz - 2) {
+                    nnext = N.charAt(i + 2) - '0';
+                }
+                if (i < sz - 3) {
+                    nnnext = N.charAt(i + 3) - '0';
+                }
+                pos = sz - i;
+
+                //Special Cases when > 3
+                if (dgt > 2) {
+                    if (pos == 10) {
+                        sM = aO[dgt] + ((dgt == 8) ? c8 : c3);
+                        lMil = true;
+                    } else if (pos == 9) {
+                        sHTh = aO[dgt] + cH;
+                    } else if (pos == 8) {
+                        sTTh = aO[dgt] + cTT;
+                    } else if (pos == 7) {
+                        sOTh = aO[dgt] + ((dgt == 8) ? c8 : c3);
+                        lTh = true;
+                    } else if (pos == 6) {
+                        sH = aO[dgt] + cH;
+                    } else if (pos == 5) {
+                        sT = aO[dgt] + cTT;
+                    } else if (pos == 4) {
+                        sO = aO[dgt] + ((dgt == 8) ? c8 : c3);
+                    } else if (pos == 2) {
+                        sTp = aO[dgt] + cTT;
+                    } else if (pos == 1) {
+                        sOp = aO[dgt] + ((dgt == 8) ? c8 : c3);
+                    }
+                } else {
+                    if (pos == 10) {
+                        sM = aM[dgt];
+                    } else if (pos == 9) {
+                        sHTh = aH[dgt];
+                    } else if (pos == 8) {
+                        if (dgt != 1) {
+                            sTTh = aT[dgt];
+                        } else {
+                            sTTh = ((next == 0) ? aT[dgt] : cT);
+                            tTTh = true;
+                        }
+                    } else if (pos == 7) {
+                        sOTh = ((prev == 1) ? aTe[dgt] : aTh[dgt]);
+                    } else if (pos == 6) {
+                        sH = aH[dgt];
+                    } else if (pos == 5) {
+                        if (dgt != 1) {
+                            sT = aT[dgt];
+                        } else {
+                            sT = (next == 0) ? aT[dgt] : cT;
+                            tT = true;
+                        }
+                    } else if (pos == 4) {
+                        sO = ((prev == 1) ? aTe[dgt] : aO[dgt]);
+                    } else if (pos == 2) {
+                        if (dgt != 1) {
+                            sTp = aT[dgt];
+                        } else {
+                            sTp = (next == 0) ? aT[dgt] : cT;
+                            tTp = true;
+                        }
+                    } else if (pos == 1) {
+                        sOp = ((prev == 1) ? aTe[dgt] : aO[dgt]);
+                    }
+                }
+
+                i++;
+            }
+
+            //Set Units
+            String uMil = " ", uTh = " ", uHTh = " ";
+            boolean bH = sHTh.isEmpty(), bT = sTTh.isEmpty(), bO = sOTh.isEmpty();
+
+            if (!sM.isEmpty() && lMil) {
+                uMil = cMil;
+            }
+
+            //I drew a Truth Table for bH, bT, bO and wrote the coressponding uHTh and uTh
+            if (!bH && bT) {
+                uHTh = cHTh;
+            } else if (!bH || !bT || !bO) {
+                if (lTh) //Thousands > 2
+                {
+                    if (!bO && bH && bT) {
+                        uTh = cOTh;
+                    } else if (!(!bH && bT)) {
+                        uTh = cTh;
+                    }
+                } else {
+                    if (!bO && !bT) {
+                        uTh = cHTh;
+                    } else if (!(bH && bT)) {
+                        uTh = cOTh;
+                    }
+                }
+            }
+
+            //Handling special cases
+            //200000
+            if (bT && bO && (sHTh == null ? aH[2] == null : sHTh.equals(aH[2]))) {
+                sHTh = c2HTh;
+            }
+
+            // Insert connectors (AND's)
+            String AND[] = new String[6];
+            String PRT[] = {sM, sHTh, sOTh, sTTh, sH, sO, sT};
+            int a, p, c = 0;
+            for (a = 0; a < 6; a++) {
+                AND[a] = "";
+            }
+            a = 0;
+            for (p = 0; p < 7; p++) {
+                if (!PRT[p].isEmpty()) {
+                    c++;
+
+                    //Handling cases like 1110 not showing an AND between 11 and 10 (because O's are checked before T's)
+                    if (p > 0 && PRT[p - 1].isEmpty() && (p == 3 || p == 6)) {
+                        a--;
+                    }
+                } else {
+                    a++;
+                }
+
+                if (c == 2) {
+
+                    AND[a++] = cw;
+                    c--;
+                }
+            }
+
+            boolean eOp = sOp.isEmpty(), eTp = sTp.isEmpty();
+            Ret = chdr
+                    + sM + uMil + AND[0]
+                    + sHTh + uHTh + AND[1]
+                    + sOTh + ((tTTh) ? " " : AND[2])
+                    + sTTh + uTh + AND[3]
+                    + sH + AND[4]
+                    + sO + ((tT) ? " " : AND[5])
+                    + sT + ((sz > 3) ? cpnd : "")
+                    + ((!(eOp && eTp)) ? cw : "")
+                    + sOp + ((!(eOp || eTp) && !tTp) ? cw : "")
+                    + sTp + ((!(eOp && eTp)) ? cpen : "")
+                    + cftr;
+
+            //Remove double spaces
+            StringBuilder sbRet = new StringBuilder(Ret);
+            for (int j = 1; j < sbRet.length(); j++) {
+                if (sbRet.charAt(j) == ' ' && sbRet.charAt(j - 1) == ' ') {
+                    sbRet.deleteCharAt(j);
+                    j--;
+                }
+            }
+
+            Ret = sbRet.toString();
+        } catch (Exception e) {
+            Ret = " ";
+        }
+
+        return Ret;
