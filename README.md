@@ -1,5 +1,5 @@
 # NumberToArabic
-The function converts a floating point number (with 2 decimal digits) to a price desctiption in Arabic. I made it for a billing system I worked on. Currently it works only on the format "X.Y", where X is 6 digits at maximum and Y is 2 digits maximum.
+The function converts a floating point number to a price desctiption in Arabic. I made it for a billing system I worked on. Currently it works only on the format "X.Y", where X is 6 digits at maximum and Y is 2 digits maximum.
 
 Examples:
 
