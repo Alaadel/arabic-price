@@ -1,4 +1,7 @@
 private String NumberToArabic(String N) {
+        if (N.equalsIgnoreCase("0.00"))
+            return "مجانا";
+            
         // Constants (units, header, footer ...etc)
         String cw = " و ", cpnd = " جنيه ", cpen = " قرش ", chdr = "فقط", cftr = "لا غير", cspc = " ",
                 cMil = " ملايين", cTh = " ألفاً ", cHTh = " ألف", cOTh = " آلاف", c8 = "ية", c3 = "ة", cH = "مائة", cT = " عشر", cTT = "ون",
