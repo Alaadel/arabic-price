@@ -1,9 +1,10 @@
 private String NumberToArabic(String N) {
+        
         if (N.equalsIgnoreCase("0.00"))
             return "مجانا";
-            
+        
         // Constants (units, header, footer ...etc)
-        String cw = " و ", cpnd = " جنيه ", cpen = " قرش ", chdr = "فقط", cftr = "لا غير", cspc = " ",
+        String cw = " و ", cpnd = " جنيه ", cpen = " قرش ", cpens = " قروش ", chdr = "فقط ", cftr = " لا غير", cspc = " ",
                 cMil = " ملايين", cTh = " ألفاً ", cHTh = " ألف", cOTh = " آلاف", c8 = "ية", c3 = "ة", cH = "مائة", cT = " عشر", cTT = "ون",
                 c2HTh = "مائتا";
 
@@ -15,7 +16,7 @@ private String NumberToArabic(String N) {
                 aTe[] = {"", "أحد", "اثنا"},
                 aO[] = {"", "واحد", "اثنان", "ثلاث", "أربع", "خمس", "ست", "سبع", "ثمان", "تسع"};
 
-        // I could have put them in one array and indexed them with the variable 'pos', but this way is clean and more readable
+        // I could have put them in one array and indexed them with the variable 'pos', but this way is much cleaner
         String Ret = "", // Substrings
                 sM = "", sHTh = "", sTTh = "", sOTh = "",
                 sH = "", sT = "", sO = "",
@@ -193,7 +194,7 @@ private String NumberToArabic(String N) {
                     + sT + ((sz > 3) ? cpnd : "")
                     + ((!(eOp && eTp)) ? cw : "")
                     + sOp + ((!(eOp || eTp) && !tTp) ? cw : "")
-                    + sTp + ((!(eOp && eTp)) ? cpen : "")
+                    + sTp + ((!(eOp && eTp)) ? ((eTp && !eOp)? cpens : cpen) : "")
                     + cftr;
 
             //Remove double spaces
@@ -211,3 +212,4 @@ private String NumberToArabic(String N) {
         }
 
         return Ret;
+    }
